@@ -75,3 +75,4 @@ gulp.task 'webserver', ->
   )
 
 gulp.task 'default', ['watch', 'webserver']
+gulp.task 'build', ['style', 'jade', 'src']
