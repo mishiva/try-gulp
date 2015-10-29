@@ -11,15 +11,10 @@ server = require 'gulp-webserver'
 source = require 'vinyl-source-stream'
 vinylPaths = require 'vinyl-paths'
 del = require 'del'
-
-# browserify
 babel = require 'gulp-babel'
 browserify = require 'browserify'
 babelify = require 'babelify'
-
-# tests
 KarmaServer = require('karma').Server;
-
 
 
 sources =
