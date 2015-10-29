@@ -3,7 +3,7 @@ gulp = require 'gulp'
 sass = require 'gulp-ruby-sass'
 # browserSync = require 'browser-sync'
 coffeelint = require 'gulp-coffeelint'
-coffee = require 'gulp-coffee'
+# coffee = require 'gulp-coffee'
 gutil = require 'gulp-util'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
@@ -11,12 +11,20 @@ rename = require 'gulp-rename'
 jade = require 'gulp-jade'
 autoprefixer = require 'gulp-autoprefixer'
 server = require 'gulp-webserver'
+babel = require 'gulp-babel'
+browserify = require 'browserify'
+source = require 'vinyl-source-stream'
+vinylPaths = require 'vinyl-paths'
+del = require 'del'
+babelify = require 'babelify'
+
 
 sources =
   sass_watch: 'app/sass/**/*.sass'
   app: "app/*"
   sass: 'app/sass'
-  coffee: 'app/coffee/**/*.coffee'
+  js: 'app/scripts/**/*.js'
+  coffee: 'app/**/*.coffee'
   jade: 'app/*.jade'
 
 destinations =
@@ -24,27 +32,16 @@ destinations =
   css: 'dist/css'
   js: 'dist/js'
 
-# Lint Task
-gulp.task 'lint', ->
-  gulp.src(sources.coffee)
-    .pipe(coffeelint())
-    .pipe(coffeelint.reporter())
 
-gulp.task 'src', ->
-  gulp.src(sources.coffee)
-  .pipe(coffee({bare: true}).on('error', gutil.log))
-  .pipe(concat('app.js'))
-  .pipe(uglify())
-  .pipe(gulp.dest(destinations.js))
-
-# gulp.task 'browser-sync', ->
-#   browserSync.init null,
-#   open: false
-#   server:
-#     baseDir: "./dist"
-#   watchOptions:
-#     debounceDelay: 1000
-
+gulp.task 'browserify', ->
+  b = browserify(
+    entries: 'app/app.js'
+    debug: true
+  ).transform(babelify).bundle()
+  .on 'error', (err) ->
+    console.log "Error : #{err.message}"
+  .pipe(source('app.js'))
+  .pipe(gulp.dest(destinations.js));
 
 gulp.task 'style', ->
   sass(sources.sass, {style: 'compressed', sourcemap: false})
@@ -55,7 +52,6 @@ gulp.task 'style', ->
     .pipe(rename('main.min.css'))
     .pipe(gulp.dest(destinations.css))
 
-
 gulp.task 'jade', ->
   gulp.src(sources.jade)
   .pipe jade pretty: true
@@ -64,7 +60,7 @@ gulp.task 'jade', ->
 
 gulp.task 'watch', ->
   gulp.watch sources.sass_watch, ['style']
-  gulp.watch sources.coffee, ['lint', 'src']
+  gulp.watch sources.js, ['browserify']
   gulp.watch sources.jade, ['jade']
 
 gulp.task 'webserver', ->
@@ -74,5 +70,12 @@ gulp.task 'webserver', ->
     open: true
   )
 
-gulp.task 'default', ['watch', 'webserver']
-gulp.task 'build', ['style', 'jade', 'src']
+gulp.task 'clean', ->
+  gulp.src('dist/**/*')
+  .pipe vinylPaths(del)
+  # .pipe gulp.dest destinations.dist
+
+
+gulp.task 'default', ['build', 'jade', 'watch', 'webserver']
+gulp.task 'build', ['style', 'jade', 'browserify']
+
