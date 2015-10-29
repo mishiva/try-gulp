@@ -1,26 +1,27 @@
-class Pow {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y
 
+
+class Pow {
+  constructor(x = 0, n = 0) {
+    this.x = x;
+    this.n = n;
+    this._resetResult()
   }
 
-  calc(x = this.x, y = this.y) {
-    return x * y;
+  calc(x = this.x, n = this.n) {
+    this._resetResult();
+    for (var i = 0; i < n; i++) {
+      this.result *= x;
+    };
+    return this.result;
   }
 
   log() {
-    console.log(`${this.x}, ${this.y}`);
+    console.log(`Result=${this.result}, x=${this.x}, n=${this.n}`);
   }
 
-  
+  _resetResult() {
+    this.result = 1;
+  }
 }
-
-// let pow = new Pow(2, 3);
-// pow.log();
-
-// var cc = 'cccc';
-
-// module.exports = Pow;
 
 export {Pow};
