@@ -1,7 +1,5 @@
 gulp = require 'gulp'
-# sass = require 'gulp-sass'
 sass = require 'gulp-ruby-sass'
-# browserSync = require 'browser-sync'
 coffeelint = require 'gulp-coffeelint'
 coffee = require 'gulp-coffee'
 gutil = require 'gulp-util'
@@ -24,26 +22,17 @@ destinations =
   css: 'dist/css'
   js: 'dist/js'
 
-# Lint Task
 gulp.task 'lint', ->
   gulp.src(sources.coffee)
     .pipe(coffeelint())
     .pipe(coffeelint.reporter())
 
-gulp.task 'src', ->
+gulp.task 'coffee', ->
   gulp.src(sources.coffee)
   .pipe(coffee({bare: true}).on('error', gutil.log))
   .pipe(concat('app.js'))
   .pipe(uglify())
   .pipe(gulp.dest(destinations.js))
-
-# gulp.task 'browser-sync', ->
-#   browserSync.init null,
-#   open: false
-#   server:
-#     baseDir: "./dist"
-#   watchOptions:
-#     debounceDelay: 1000
 
 
 gulp.task 'style', ->
@@ -55,7 +44,6 @@ gulp.task 'style', ->
     .pipe(rename('main.min.css'))
     .pipe(gulp.dest(destinations.css))
 
-
 gulp.task 'jade', ->
   gulp.src(sources.jade)
   .pipe jade pretty: true
@@ -64,7 +52,7 @@ gulp.task 'jade', ->
 
 gulp.task 'watch', ->
   gulp.watch sources.sass_watch, ['style']
-  gulp.watch sources.coffee, ['lint', 'src']
+  gulp.watch sources.coffee, ['lint', 'coffee']
   gulp.watch sources.jade, ['jade']
 
 gulp.task 'webserver', ->
@@ -74,5 +62,5 @@ gulp.task 'webserver', ->
     open: true
   )
 
-gulp.task 'default', ['watch', 'webserver']
-gulp.task 'build', ['style', 'jade', 'src']
+gulp.task 'default', ['build', 'watch', 'webserver']
+gulp.task 'build', ['style', 'jade', 'coffee']
