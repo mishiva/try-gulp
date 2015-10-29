@@ -14,7 +14,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['browserify', 'mocha', 'chai'],
+    frameworks: ['browserify', 'mocha', 'chai', 'sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -33,6 +33,7 @@ module.exports = function(config) {
       'karma-nyan-reporter',
       'karma-mocha',
       'karma-chai',
+      'karma-sinon',
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
       'karma-browserify',

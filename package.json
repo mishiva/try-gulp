@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
-    "check karma": "karma start"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "gulp": "^3.8.11"
@@ -36,13 +36,11 @@
     "karma-chrome-launcher": "^0.2.1",
     "karma-mocha": "^0.2.0",
     "karma-nyan-reporter": "^0.2.2",
+    "karma-sinon": "^1.0.4",
     "node-sass": "^2.1.1",
     "sinon": "^1.17.2",
     "vinyl-paths": "^2.0.0",
     "vinyl-source-stream": "^1.1.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC"
