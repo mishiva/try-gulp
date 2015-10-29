@@ -1,7 +1,6 @@
 gulp = require 'gulp'
 sass = require 'gulp-ruby-sass'
 coffeelint = require 'gulp-coffeelint'
-coffee = require 'gulp-coffee'
 gutil = require 'gulp-util'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
@@ -9,12 +8,21 @@ rename = require 'gulp-rename'
 jade = require 'gulp-jade'
 autoprefixer = require 'gulp-autoprefixer'
 server = require 'gulp-webserver'
+source = require 'vinyl-source-stream'
+vinylPaths = require 'vinyl-paths'
+del = require 'del'
+babel = require 'gulp-babel'
+browserify = require 'browserify'
+babelify = require 'babelify'
+KarmaServer = require('karma').Server;
+
 
 sources =
   sass_watch: 'app/sass/**/*.sass'
   app: "app/*"
   sass: 'app/sass'
-  coffee: 'app/coffee/**/*.coffee'
+  js: 'app/**/**/*.js'
+  coffee: 'app/**/*.coffee'
   jade: 'app/*.jade'
 
 destinations =
@@ -22,18 +30,22 @@ destinations =
   css: 'dist/css'
   js: 'dist/js'
 
-gulp.task 'lint', ->
-  gulp.src(sources.coffee)
-    .pipe(coffeelint())
-    .pipe(coffeelint.reporter())
 
-gulp.task 'coffee', ->
-  gulp.src(sources.coffee)
-  .pipe(coffee({bare: true}).on('error', gutil.log))
-  .pipe(concat('app.js'))
-  .pipe(uglify())
-  .pipe(gulp.dest(destinations.js))
 
+gulp.task 'karma', (done) ->
+  new KarmaServer(
+    configFile: __dirname + '/karma.conf.js'
+  , done).start()
+
+gulp.task 'browserify', ->
+  b = browserify(
+    entries: 'app/app.js'
+    debug: true
+  ).transform(babelify).bundle()
+  .on 'error', (err) ->
+    console.log "Error : #{err.message}"
+  .pipe(source('build.js'))
+  .pipe(gulp.dest(destinations.js));
 
 gulp.task 'style', ->
   sass(sources.sass, {style: 'compressed', sourcemap: false})
@@ -52,7 +64,7 @@ gulp.task 'jade', ->
 
 gulp.task 'watch', ->
   gulp.watch sources.sass_watch, ['style']
-  gulp.watch sources.coffee, ['lint', 'coffee']
+  gulp.watch sources.js, ['browserify']
   gulp.watch sources.jade, ['jade']
 
 gulp.task 'webserver', ->
@@ -62,5 +74,11 @@ gulp.task 'webserver', ->
     open: true
   )
 
-gulp.task 'default', ['build', 'watch', 'webserver']
-gulp.task 'build', ['style', 'jade', 'coffee']
+gulp.task 'clean', ->
+  gulp.src('dist/**/*')
+  .pipe vinylPaths(del)
+  # .pipe gulp.dest destinations.dist
+
+
+gulp.task 'default', ['build', 'jade', 'watch', 'webserver']
+gulp.task 'build', ['style', 'jade', 'browserify']

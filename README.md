@@ -2,12 +2,18 @@
 
 Just simple gulp tasks
 
-## Tasks for:
-* `Coffeescript` (concat, uglify)
-* `Sass` (compress, concat, rename, autoprefixer)
+## Features:
+* `Browserify`
+* `ES6`
+* `Sass`
 * `Jade`
+* `Karma`
+* `Mocha`
+* `Chai`
+* `Sinon`
 
-## Running / Building
+## Running / Building / Tests
 
 * `gulp` (server)
 * `gulp build` (building)
+* `gulp karma` (run tests)
