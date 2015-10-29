@@ -3,13 +3,18 @@
   "version": "0.0.0",
   "description": "",
   "main": "gulpfile.js",
+  "scripts": {
+    "check karma": "karma start"
+  },
   "dependencies": {
     "gulp": "^3.8.11"
   },
   "devDependencies": {
     "babelify": "^6.4.0",
+    "brfs": "^1.0.2",
     "browser-sync": "^1.8.2",
     "browserify": "^12.0.1",
+    "chai": "^3.4.0",
     "coffee-script": "^1.8.0",
     "del": "^2.0.2",
     "gulp-autoprefixer": "^2.0.0",
@@ -25,7 +30,14 @@
     "gulp-uglify": "^1.0.2",
     "gulp-util": "^3.0.1",
     "gulp-webserver": "^0.9.0",
+    "karma": "^0.13.14",
+    "karma-babel-preprocessor": "^5.2.2",
+    "karma-browserify": "^4.4.0",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-mocha": "^0.2.0",
+    "karma-nyan-reporter": "^0.2.2",
     "node-sass": "^2.1.1",
+    "sinon": "^1.17.2",
     "vinyl-paths": "^2.0.0",
     "vinyl-source-stream": "^1.1.0"
   },

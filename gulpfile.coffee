@@ -1,9 +1,6 @@
 gulp = require 'gulp'
-# sass = require 'gulp-sass'
 sass = require 'gulp-ruby-sass'
-# browserSync = require 'browser-sync'
 coffeelint = require 'gulp-coffeelint'
-# coffee = require 'gulp-coffee'
 gutil = require 'gulp-util'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
@@ -11,19 +8,25 @@ rename = require 'gulp-rename'
 jade = require 'gulp-jade'
 autoprefixer = require 'gulp-autoprefixer'
 server = require 'gulp-webserver'
-babel = require 'gulp-babel'
-browserify = require 'browserify'
 source = require 'vinyl-source-stream'
 vinylPaths = require 'vinyl-paths'
 del = require 'del'
+
+# browserify
+babel = require 'gulp-babel'
+browserify = require 'browserify'
 babelify = require 'babelify'
+
+# tests
+KarmaServer = require('karma').Server;
+
 
 
 sources =
   sass_watch: 'app/sass/**/*.sass'
   app: "app/*"
   sass: 'app/sass'
-  js: 'app/scripts/**/*.js'
+  js: 'app/**/**/*.js'
   coffee: 'app/**/*.coffee'
   jade: 'app/*.jade'
 
@@ -33,6 +36,11 @@ destinations =
   js: 'dist/js'
 
 
+gulp.task 'karma', (done) ->
+  new KarmaServer(
+    configFile: __dirname + '/karma.conf.js'
+  , done).start()
+
 gulp.task 'browserify', ->
   b = browserify(
     entries: 'app/app.js'
@@ -40,7 +48,7 @@ gulp.task 'browserify', ->
   ).transform(babelify).bundle()
   .on 'error', (err) ->
     console.log "Error : #{err.message}"
-  .pipe(source('app.js'))
+  .pipe(source('build.js'))
   .pipe(gulp.dest(destinations.js));
 
 gulp.task 'style', ->
